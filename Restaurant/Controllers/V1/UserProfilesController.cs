@@ -1,5 +1,7 @@
-﻿using Application.Contracts.UserProfile.Requests;
+﻿using Application.Contracts.Common;
+using Application.Contracts.UserProfile.Requests;
 using Application.Contracts.UserProfile.Responses;
+using Application.Enums;
 using Application.UserProfiles.Commands;
 using Application.UserProfiles.Queries;
 using AutoMapper;
@@ -11,7 +13,7 @@ namespace Restaurant.Controllers.V1
     [ApiVersion("1.0")]
     [Route(ApiRoutes.BaseRoute)]
     [ApiController]
-    public class UserProfilesController : Controller
+    public class UserProfilesController : BaseController
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
@@ -47,6 +49,8 @@ namespace Restaurant.Controllers.V1
         {
             var query = new GetUserProfileById { UserProfileId = Guid.Parse(id) };
             var response = await _mediator.Send(query);
+
+            if (response is null) return NotFound($"No user with profile ID {id} found");
             var profile = _mapper.Map<UserProfileResponse>(response);
 
             return Ok(profile);
@@ -60,7 +64,7 @@ namespace Restaurant.Controllers.V1
             command.UserProfileId = Guid.Parse(id);
             var response = await _mediator.Send(command);
 
-            return NoContent();
+            return response.IsError ? HandleErrorResponse(response.Errors) : NoContent();
         }
 
         [HttpDelete]

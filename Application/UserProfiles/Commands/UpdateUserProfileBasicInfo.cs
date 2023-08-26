@@ -1,13 +1,10 @@
-﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.Models;
+using Domain.Aggregates.UserProfileAggregate;
+using MediatR;
 
 namespace Application.UserProfiles.Commands
 {
-    public class UpdateUserProfileBasicInfo : IRequest
+    public class UpdateUserProfileBasicInfo : IRequest<OperationResult<UserProfile>>
     {
         public Guid UserProfileId { get; set; }
         public string FirstName { get; set; }
