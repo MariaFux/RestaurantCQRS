@@ -28,7 +28,7 @@ namespace Restaurant.Controllers.V1
         {
             var query = new GetAllUserProfiles();
             var response = await _mediator.Send(query);
-            var profiles = _mapper.Map<List<UserProfileResponse>>(response);
+            var profiles = _mapper.Map<List<UserProfileResponse>>(response.Payload);
 
             return Ok(profiles);
         }
@@ -38,9 +38,9 @@ namespace Restaurant.Controllers.V1
         {
             var command = _mapper.Map<CreateUserCommand>(profile);
             var response = await _mediator.Send(command);
-            var userProfile = _mapper.Map<UserProfileResponse>(response);
+            var userProfile = _mapper.Map<UserProfileResponse>(response.Payload);
 
-            return CreatedAtAction(nameof(GetUserProfileById), new { id = response.UserProfileId }, userProfile);
+            return CreatedAtAction(nameof(GetUserProfileById), new { id = userProfile.UserProfileId }, userProfile);
         }
 
         [HttpGet]
@@ -50,10 +50,11 @@ namespace Restaurant.Controllers.V1
             var query = new GetUserProfileById { UserProfileId = Guid.Parse(id) };
             var response = await _mediator.Send(query);
 
-            if (response is null) return NotFound($"No user with profile ID {id} found");
-            var profile = _mapper.Map<UserProfileResponse>(response);
+            if (response.IsError)
+                return HandleErrorResponse(response.Errors);
 
-            return Ok(profile);
+            var userProfile = _mapper.Map<UserProfileResponse>(response.Payload);
+            return Ok(userProfile);
         }
 
         [HttpPatch]
@@ -74,7 +75,7 @@ namespace Restaurant.Controllers.V1
             var command = new DeleteUserProfile() { UserProfileId = Guid.Parse(id) };
             var response = await _mediator.Send(command);
 
-            return NoContent();
+            return response.IsError ? HandleErrorResponse(response.Errors) : NoContent();
         }
     }
 }

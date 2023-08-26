@@ -1,9 +1,10 @@
-﻿using Domain.Aggregates.UserProfileAggregate;
+﻿using Application.Models;
+using Domain.Aggregates.UserProfileAggregate;
 using MediatR;
 
 namespace Application.UserProfiles.Commands
 {
-    public class CreateUserCommand : IRequest<UserProfile>
+    public class CreateUserCommand : IRequest<OperationResult<UserProfile>>
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

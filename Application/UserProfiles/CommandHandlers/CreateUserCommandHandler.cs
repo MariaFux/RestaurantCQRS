@@ -1,11 +1,12 @@
-﻿using Application.UserProfiles.Commands;
+﻿using Application.Models;
+using Application.UserProfiles.Commands;
 using Dal;
 using Domain.Aggregates.UserProfileAggregate;
 using MediatR;
 
 namespace Application.UserProfiles.CommandHandlers
 {
-    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserProfile>
+    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, OperationResult<UserProfile>>
     {
         private readonly DataContext _dataContext;
 
@@ -14,8 +15,10 @@ namespace Application.UserProfiles.CommandHandlers
             _dataContext = dataContext;
         }
 
-        public async Task<UserProfile> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+        public async Task<OperationResult<UserProfile>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
+            var result = new OperationResult<UserProfile>();
+
             var basicInfo = BasicInfo.CreateBasicInfo(request.FirstName, request.LastName,
                 request.Email, request.Phone, request.DateOfBirth, request.CurrentCity);
 
@@ -24,7 +27,9 @@ namespace Application.UserProfiles.CommandHandlers
             _dataContext.UserProfiles.Add(userProfile);
             await _dataContext.SaveChangesAsync();
 
-            return userProfile;
+            result.Payload = userProfile;
+
+            return result;
         }
     }
 }

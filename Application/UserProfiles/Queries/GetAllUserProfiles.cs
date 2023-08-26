@@ -1,9 +1,10 @@
-﻿using Domain.Aggregates.UserProfileAggregate;
+﻿using Application.Models;
+using Domain.Aggregates.UserProfileAggregate;
 using MediatR;
 
 namespace Application.UserProfiles.Queries
 {
-    public class GetAllUserProfiles : IRequest<IEnumerable<UserProfile>>
+    public class GetAllUserProfiles : IRequest<OperationResult<IEnumerable<UserProfile>>>
     {
     }
 }
