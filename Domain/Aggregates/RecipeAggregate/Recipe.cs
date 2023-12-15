@@ -6,6 +6,7 @@ namespace Domain.Aggregates.RecipeAggregate
 {
     public class Recipe
     {
+        private readonly List<RecipeIngredient> _ingredients = new List<RecipeIngredient>();
         private Recipe()
         {
         }
@@ -16,6 +17,7 @@ namespace Domain.Aggregates.RecipeAggregate
         public string TextContent { get; private set; }
         public DateTime CreatedDate { get; private set; }
         public DateTime LastModified { get; private set; }
+        public IEnumerable<RecipeIngredient> Ingredients { get { return _ingredients; } }
 
         //Factory method
         /// <summary>
@@ -72,6 +74,18 @@ namespace Domain.Aggregates.RecipeAggregate
                 throw exception;
             }
             TextContent = newText;
+            LastModified = DateTime.UtcNow;
+        }
+
+        public void AddIngredient(RecipeIngredient newIngredient)
+        {
+            _ingredients.Add(newIngredient);
+            LastModified = DateTime.UtcNow;
+        }
+
+        public void RemoveIngredient(RecipeIngredient toRemoveIngredient)
+        {
+            _ingredients.Remove(toRemoveIngredient);
             LastModified = DateTime.UtcNow;
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Dal.Configurations;
+using Domain.Aggregates.MenuAggregate;
 using Domain.Aggregates.RecipeAggregate;
 using Domain.Aggregates.UserProfileAggregate;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -14,6 +15,7 @@ namespace Dal
 
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<Recipe> Recipes { get; set; }
+        public DbSet<Menu> Menus { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -22,7 +24,7 @@ namespace Dal
             builder.ApplyConfiguration(new IdentityUserRoleConfig());
             builder.ApplyConfiguration(new IdentityUserTokenConfig());
             builder.ApplyConfiguration(new MenuConfig());
-            builder.ApplyConfiguration(new RecipeConfig());
+            builder.ApplyConfiguration(new RecipeIngredientConfig());
         }
     }
 }
