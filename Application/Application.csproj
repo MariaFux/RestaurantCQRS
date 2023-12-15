@@ -13,21 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Contracts\Menus\Requests\" />
-    <Folder Include="Contracts\Menus\Responses\" />
-    <Folder Include="Contracts\Recipes\Requests\" />
-    <Folder Include="Contracts\Recipes\Responses\" />
-    <Folder Include="Menus\Commands\" />
-    <Folder Include="Menus\CommandHandlers\" />
-    <Folder Include="Menus\QueriesHandler\" />
-    <Folder Include="Menus\Queries\" />
-    <Folder Include="Recipes\CommandHandlers\" />
-    <Folder Include="Recipes\Commands\" />
-    <Folder Include="Recipes\QueriesHandler\" />
-    <Folder Include="Recipes\Queries\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Dal\Dal.csproj" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
