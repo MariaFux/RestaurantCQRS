@@ -7,6 +7,7 @@ using Application.UserProfiles.Queries;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Restaurant.Filters;
 
 namespace Restaurant.Controllers.V1
 {
@@ -34,13 +35,15 @@ namespace Restaurant.Controllers.V1
         }
 
         [HttpPost]
+        [ValidateModel]
         public async Task<IActionResult> CreateUserProfileAsync([FromBody] UserProfileCreateUpdate profile)
         {
             var command = _mapper.Map<CreateUserCommand>(profile);
             var response = await _mediator.Send(command);
             var userProfile = _mapper.Map<UserProfileResponse>(response.Payload);
 
-            return CreatedAtAction(nameof(GetUserProfileById), new { id = userProfile.UserProfileId }, userProfile);
+            return response.IsError ? HandleErrorResponse(response.Errors) : CreatedAtAction(nameof(GetUserProfileById), 
+                new { id = userProfile.UserProfileId }, userProfile);
         }
 
         [HttpGet]
@@ -59,6 +62,8 @@ namespace Restaurant.Controllers.V1
 
         [HttpPatch]
         [Route(ApiRoutes.UserProfiles.IdRoute)]
+        [ValidateModel]
+        [ValidateGuid("id")]
         public async Task<IActionResult> UpdateUserProfile(string id, UserProfileCreateUpdate updatedProfile)
         {
             var command = _mapper.Map<UpdateUserProfileBasicInfo>(updatedProfile);
@@ -70,6 +75,7 @@ namespace Restaurant.Controllers.V1
 
         [HttpDelete]
         [Route(ApiRoutes.UserProfiles.IdRoute)]
+        [ValidateGuid("id")]
         public async Task<IActionResult> DeleteUserProfile(string id)
         {
             var command = new DeleteUserProfile() { UserProfileId = Guid.Parse(id) };

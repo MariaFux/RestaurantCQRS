@@ -25,7 +25,7 @@ namespace Restaurant.Controllers.V1
             }
 
             apiError.StatusCode = (int)ErrorCode.ServerError;
-            apiError.StatusPhrase = "Internal server error";
+            apiError.StatusPhrase = "Internal Server Error";
             apiError.Timestamp = DateTime.Now;
             apiError.Errors.Add("Unknown error");
 

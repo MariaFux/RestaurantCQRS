@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Mvc;
+using Restaurant.Filters;
 
 namespace Restaurant.Registrars
 {
@@ -7,7 +8,10 @@ namespace Restaurant.Registrars
     {
         public void RegisterServices(WebApplicationBuilder builder)
         {
-            builder.Services.AddControllers();
+            builder.Services.AddControllers(config =>
+            {
+                config.Filters.Add(typeof(ExceptionHandler));
+            });
 
             builder.Services.AddApiVersioning(config =>
             {

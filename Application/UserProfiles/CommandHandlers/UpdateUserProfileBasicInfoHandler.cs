@@ -3,6 +3,7 @@ using Application.Models;
 using Application.UserProfiles.Commands;
 using Dal;
 using Domain.Aggregates.UserProfileAggregate;
+using Domain.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,7 +25,7 @@ namespace Application.UserProfiles.CommandHandlers
             try
             {
                 var userProfile = await _dataContext.UserProfiles
-                .FirstOrDefaultAsync(up => up.UserProfileId == request.UserProfileId);
+                    .FirstOrDefaultAsync(up => up.UserProfileId == request.UserProfileId);
 
                 if(userProfile is null)
                 {
@@ -44,7 +45,20 @@ namespace Application.UserProfiles.CommandHandlers
                 await _dataContext.SaveChangesAsync();
 
                 result.Payload = userProfile;
-            } 
+            }
+            catch (UserProfileNotValidException ex)
+            {
+                result.IsError = true;
+                ex.ValidationErrors.ForEach(e =>
+                {
+                    var error = new Error
+                    {
+                        Code = ErrorCode.ValidationError,
+                        Message = $"{ex.Message}"
+                    };
+                    result.Errors.Add(error);
+                });
+            }
             catch (Exception ex) 
             {
                 var error = new Error { Code = ErrorCode.ServerError, Message = ex.Message };

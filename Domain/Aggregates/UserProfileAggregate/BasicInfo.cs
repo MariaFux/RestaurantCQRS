@@ -1,4 +1,7 @@
-﻿namespace Domain.Aggregates.UserProfileAggregate
+﻿using Domain.Exceptions;
+using Domain.Validators.UserProfileValidators;
+
+namespace Domain.Aggregates.UserProfileAggregate
 {
     public class BasicInfo
     {
@@ -16,8 +19,9 @@
         public static BasicInfo CreateBasicInfo(string firstName, string lastName, string email, 
             string phone, DateTime dateOfBirth, string currentCity)
         {
-            //TODO: add validation
-            return new BasicInfo
+            var validator = new BasicInfoValidator();
+
+            var objToValidate = new BasicInfo
             {
                 FirstName = firstName,
                 LastName = lastName,
@@ -26,6 +30,18 @@
                 DateOfBirth = dateOfBirth,
                 CurrentCity = currentCity
             };
+            
+            var validationResult = validator.Validate(objToValidate);
+
+            if (validationResult.IsValid) return objToValidate;
+
+            var exception = new UserProfileNotValidException("The user profile is not valid");
+            foreach (var error in validationResult.Errors)
+            {
+                exception.ValidationErrors.Add(error.ErrorMessage);
+            }
+
+            throw exception;
         }
     }
 }

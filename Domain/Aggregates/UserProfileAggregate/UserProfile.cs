@@ -15,7 +15,6 @@
         // Factory method
         public static UserProfile CreateUserProfile(string identityId, BasicInfo basicInfo)
         {
-            //TODO: add validation
             return new UserProfile
             {
                 IdentityId = identityId,
