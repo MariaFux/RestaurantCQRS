@@ -106,5 +106,40 @@ namespace Restaurant.Controllers.V1
 
             return result.IsError ? HandleErrorResponse(result.Errors) : NoContent();
         }
+
+        [HttpGet]
+        [Route(ApiRoutes.Recipes.RecipeIngredients)]
+        [ValidateGuid("recipeId")]
+        public async Task<IActionResult> GetIngredientsByRecipeId(string recipeId)
+        {
+            var query = new GetRecipeIngredients() { RecipeId = Guid.Parse(recipeId) };
+            var result = await _mediator.Send(query);
+
+            if (result.IsError) HandleErrorResponse(result.Errors);
+
+            var ingredients = _mapper.Map<List<RecipeIngredientResponse>>(result.Payload);
+            return Ok(ingredients);
+        }
+
+        [HttpPost]
+        [Route(ApiRoutes.Recipes.RecipeIngredients)]
+        [ValidateGuid("recipeId")]
+        [ValidateModel]
+        public async Task<IActionResult> AddIngredientToRecipe(string recipeId, [FromBody] RecipeIngredientCreate ingredient)
+        {
+            var command = new AddRecipeIngredient()
+            {
+                RecipeId = Guid.Parse(recipeId),
+                UserProfileId = ingredient.UserProfileId,
+                IngredientName = ingredient.Name
+            };
+
+            var result = await _mediator.Send(command);
+
+            if (result.IsError) HandleErrorResponse(result.Errors);
+
+            var newIngredient = _mapper.Map<RecipeIngredientResponse>(result.Payload);
+            return Ok(newIngredient);
+        }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Domain.Exceptions
 {
-    internal class RecipeIngredientNotValidException : NotValidException
+    public class RecipeIngredientNotValidException : NotValidException
     {
         internal RecipeIngredientNotValidException() { }
         internal RecipeIngredientNotValidException(string message) : base(message) { }

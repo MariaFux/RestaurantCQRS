@@ -9,6 +9,7 @@ namespace Application.MappingProfiles
         public RecipeMappings()
         {
             CreateMap<Recipe, RecipeResponse>();
+            CreateMap<RecipeIngredient, RecipeIngredientResponse>();
         }
     }
 }

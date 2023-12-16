@@ -11,7 +11,7 @@ namespace Domain.Validators.RecipeValidators
                 .NotNull().WithMessage("Ingredient name should not be null")
                 .NotEmpty().WithMessage("Ingredient name should not be empty")
                 .MaximumLength(20)
-                .MinimumLength(1);
+                .MinimumLength(3);
         }
     }
 }
