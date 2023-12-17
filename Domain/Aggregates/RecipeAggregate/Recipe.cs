@@ -1,4 +1,5 @@
-﻿using Domain.Aggregates.UserProfileAggregate;
+﻿using Domain.Aggregates.MenuAggregate;
+using Domain.Aggregates.UserProfileAggregate;
 using Domain.Exceptions;
 using Domain.Validators.RecipeValidators;
 
@@ -7,6 +8,7 @@ namespace Domain.Aggregates.RecipeAggregate
     public class Recipe
     {
         private readonly List<RecipeIngredient> _ingredients = new List<RecipeIngredient>();
+        private readonly List<Menu> _menus = new List<Menu>();
         private Recipe()
         {
         }
@@ -18,6 +20,7 @@ namespace Domain.Aggregates.RecipeAggregate
         public DateTime CreatedDate { get; private set; }
         public DateTime LastModified { get; private set; }
         public IEnumerable<RecipeIngredient> Ingredients { get { return _ingredients; } }
+        public IEnumerable<Menu> Menus { get { return _menus; } }
 
         //Factory method
         /// <summary>

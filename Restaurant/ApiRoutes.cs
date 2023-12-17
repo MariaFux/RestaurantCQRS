@@ -19,6 +19,8 @@
         public class Menus
         {
             public const string IdRoute = "{id}";
+            public const string MenusRecipes = "{menuId}/recipes";
+            public const string RecipeById = "{menuId}/recipes/{recipeId}";
         }
     }
 }

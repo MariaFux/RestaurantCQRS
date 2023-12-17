@@ -8,7 +8,8 @@ namespace Dal.Configurations
     {
         public void Configure(EntityTypeBuilder<Menu> builder)
         {
-            builder.HasKey(m => m.MenuId);
+            builder.HasMany(e => e.Recipes)
+                .WithMany(e => e.Menus);
         }
     }
 }

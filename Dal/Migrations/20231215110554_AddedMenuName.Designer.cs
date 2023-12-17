@@ -4,6 +4,7 @@ using Dal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dal.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231215110554_AddedMenuName")]
+    partial class AddedMenuName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -58,6 +61,9 @@ namespace Dal.Migrations
                     b.Property<DateTime>("LastModified")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("MenuId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -70,6 +76,8 @@ namespace Dal.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("RecipeId");
+
+                    b.HasIndex("MenuId");
 
                     b.HasIndex("UserProfileId");
 
@@ -124,21 +132,6 @@ namespace Dal.Migrations
                     b.HasKey("UserProfileId");
 
                     b.ToTable("UserProfiles");
-                });
-
-            modelBuilder.Entity("MenuRecipe", b =>
-                {
-                    b.Property<Guid>("MenusMenuId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("RecipesRecipeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("MenusMenuId", "RecipesRecipeId");
-
-                    b.HasIndex("RecipesRecipeId");
-
-                    b.ToTable("MenuRecipe");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -311,6 +304,10 @@ namespace Dal.Migrations
 
             modelBuilder.Entity("Domain.Aggregates.RecipeAggregate.Recipe", b =>
                 {
+                    b.HasOne("Domain.Aggregates.MenuAggregate.Menu", null)
+                        .WithMany("Recipes")
+                        .HasForeignKey("MenuId");
+
                     b.HasOne("Domain.Aggregates.UserProfileAggregate.UserProfile", "UserProfile")
                         .WithMany()
                         .HasForeignKey("UserProfileId")
@@ -371,19 +368,9 @@ namespace Dal.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MenuRecipe", b =>
+            modelBuilder.Entity("Domain.Aggregates.MenuAggregate.Menu", b =>
                 {
-                    b.HasOne("Domain.Aggregates.MenuAggregate.Menu", null)
-                        .WithMany()
-                        .HasForeignKey("MenusMenuId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Aggregates.RecipeAggregate.Recipe", null)
-                        .WithMany()
-                        .HasForeignKey("RecipesRecipeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Recipes");
                 });
 
             modelBuilder.Entity("Domain.Aggregates.RecipeAggregate.Recipe", b =>
