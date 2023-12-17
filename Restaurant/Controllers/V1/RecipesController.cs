@@ -1,10 +1,12 @@
 ﻿using Application.Contracts.Recipes.Requests;
 using Application.Contracts.Recipes.Responses;
+using Application.Menus.Commands;
 using Application.Recipes.Commands;
 using Application.Recipes.Queries;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Restaurant.Filters;
 
 namespace Restaurant.Controllers.V1
@@ -140,6 +142,18 @@ namespace Restaurant.Controllers.V1
 
             var newIngredient = _mapper.Map<RecipeIngredientResponse>(result.Payload);
             return Ok(newIngredient);
+        }
+
+        [HttpDelete]
+        [Route(ApiRoutes.Recipes.IdRoute)]
+        [ValidateGuid("id")]
+        [ValidateGuid("ingredientId")]
+        public async Task<IActionResult> RemoveIngredientFromRecipe(string id, [FromQuery, BindRequired] string ingredientId)
+        {
+            var command = new DeleteRecipeIngredient() { RecipeId = Guid.Parse(id), IngredientId = Guid.Parse(ingredientId) };
+            var result = await _mediator.Send(command);
+
+            return result.IsError ? HandleErrorResponse(result.Errors) : NoContent();
         }
     }
 }
