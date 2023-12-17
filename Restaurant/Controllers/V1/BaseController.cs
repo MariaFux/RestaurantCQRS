@@ -1,8 +1,7 @@
-﻿using Application.Contracts.Common;
-using Application.Enums;
+﻿using Application.Enums;
 using Application.Models;
-using Azure;
 using Microsoft.AspNetCore.Mvc;
+using Restaurant.Contracts.Common;
 
 namespace Restaurant.Controllers.V1
 {

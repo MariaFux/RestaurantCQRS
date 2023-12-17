@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Application.Contracts.Recipes.Requests
+namespace Restaurant.Contracts.Recipes.Requests
 {
     public class RecipeCreate
     {
@@ -12,5 +12,5 @@ namespace Application.Contracts.Recipes.Requests
         [Required]
         [StringLength(1000)]
         public string TextContent { get; set; }
-     }
+    }
 }

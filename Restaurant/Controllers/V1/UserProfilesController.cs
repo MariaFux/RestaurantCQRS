@@ -1,12 +1,10 @@
-﻿using Application.Contracts.Common;
-using Application.Contracts.UserProfile.Requests;
-using Application.Contracts.UserProfile.Responses;
-using Application.Enums;
-using Application.UserProfiles.Commands;
+﻿using Application.UserProfiles.Commands;
 using Application.UserProfiles.Queries;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Restaurant.Contracts.UserProfile.Requests;
+using Restaurant.Contracts.UserProfile.Responses;
 using Restaurant.Filters;
 
 namespace Restaurant.Controllers.V1

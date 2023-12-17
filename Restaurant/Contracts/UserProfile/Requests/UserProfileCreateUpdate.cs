@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Application.Contracts.UserProfile.Requests
+namespace Restaurant.Contracts.UserProfile.Requests
 {
-    public record UserProfileCreateUpdate
+    public class UserProfileCreateUpdate
     {
         [Required]
         [MinLength(3)]

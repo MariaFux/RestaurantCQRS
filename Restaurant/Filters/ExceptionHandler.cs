@@ -1,7 +1,7 @@
-﻿using Application.Contracts.Common;
-using Application.Enums;
+﻿using Application.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Restaurant.Contracts.Common;
 
 namespace Restaurant.Filters
 {

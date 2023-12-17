@@ -1,4 +1,4 @@
-﻿namespace Application.Contracts.Recipes.Responses
+﻿namespace Restaurant.Contracts.Recipes.Responses
 {
     public class RecipeResponse
     {

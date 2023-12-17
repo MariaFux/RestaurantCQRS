@@ -1,12 +1,11 @@
-﻿using Application.Contracts.Menus.Requests;
-using Application.Contracts.Menus.Responses;
-using Application.Menus.Commands;
+﻿using Application.Menus.Commands;
 using Application.Menus.Queries;
-using Application.Recipes.Commands;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Restaurant.Contracts.Menus.Requests;
+using Restaurant.Contracts.Menus.Responses;
 using Restaurant.Filters;
 
 namespace Restaurant.Controllers.V1

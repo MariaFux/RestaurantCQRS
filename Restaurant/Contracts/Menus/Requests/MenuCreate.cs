@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Application.Contracts.Menus.Requests
+namespace Restaurant.Contracts.Menus.Requests
 {
     public class MenuCreate
     {

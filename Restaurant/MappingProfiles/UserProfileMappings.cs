@@ -1,9 +1,9 @@
-﻿using Application.Contracts.Menus.Responses;
-using Application.Contracts.UserProfile.Requests;
-using Application.Contracts.UserProfile.Responses;
-using Application.UserProfiles.Commands;
+﻿using Application.UserProfiles.Commands;
 using AutoMapper;
 using Domain.Aggregates.UserProfileAggregate;
+using Restaurant.Contracts.Menus.Responses;
+using Restaurant.Contracts.UserProfile.Requests;
+using Restaurant.Contracts.UserProfile.Responses;
 
 namespace Restaurant.MappingProfiles
 {

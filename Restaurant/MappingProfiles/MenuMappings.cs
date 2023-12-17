@@ -1,6 +1,6 @@
-﻿using Application.Contracts.Menus.Responses;
-using AutoMapper;
+﻿using AutoMapper;
 using Domain.Aggregates.MenuAggregate;
+using Restaurant.Contracts.Menus.Responses;
 
 namespace Restaurant.MappingProfiles
 {

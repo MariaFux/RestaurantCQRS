@@ -1,4 +1,4 @@
-﻿namespace Application.Contracts.Common
+﻿namespace Restaurant.Contracts.Common
 {
     public class ErrorResponse
     {

@@ -1,6 +1,6 @@
-﻿namespace Application.Contracts.UserProfile.Responses
+﻿namespace Restaurant.Contracts.UserProfile.Responses
 {
-    public record BasicInformation
+    public class BasicInformation
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
