@@ -1,10 +1,8 @@
 ﻿using Application.Contracts.Menus.Requests;
 using Application.Contracts.Menus.Responses;
-using Application.Contracts.Recipes.Responses;
 using Application.Menus.Commands;
 using Application.Menus.Queries;
 using Application.Recipes.Commands;
-using Application.Recipes.Queries;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -36,7 +34,7 @@ namespace Restaurant.Controllers.V1
         }
 
         [HttpGet]
-        [Route(ApiRoutes.Recipes.IdRoute)]
+        [Route(ApiRoutes.Menus.IdRoute)]
         [ValidateGuid("id")]
         public async Task<IActionResult> GetById(string id)
         {
@@ -63,6 +61,17 @@ namespace Restaurant.Controllers.V1
 
             return result.IsError ? HandleErrorResponse(result.Errors)
                 : CreatedAtAction(nameof(GetById), new { id = result.Payload.UserProfileId }, mapped);
+        }
+
+        [HttpDelete]
+        [Route(ApiRoutes.Menus.IdRoute)]
+        [ValidateGuid("id")]
+        public async Task<IActionResult> DeleteMenu(string id)
+        {
+            var command = new DeleteMenu() { MenuId = Guid.Parse(id) };
+            var result = await _mediator.Send(command);
+
+            return result.IsError ? HandleErrorResponse(result.Errors) : NoContent();
         }
 
         [HttpGet]
@@ -103,7 +112,7 @@ namespace Restaurant.Controllers.V1
 
         [HttpDelete]
         [Route(ApiRoutes.Menus.IdRoute)]
-        [ValidateGuid("menuId")]
+        [ValidateGuid("id")]
         [ValidateGuid("recipeId")]
         public async Task<IActionResult> RemoveRecipeFromMenu(string id, [FromQuery, BindRequired] string recipeId)
         {

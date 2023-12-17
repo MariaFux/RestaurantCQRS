@@ -8,25 +8,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Menus.CommandHandlers
 {
-    public class DeleteMenuRecipeHandler : IRequestHandler<DeleteMenuRecipe, OperationResult<Menu>>
+    public class DeleteMenuHandler : IRequestHandler<DeleteMenu, OperationResult<Menu>>
     {
         private readonly DataContext _dataContext;
 
-        public DeleteMenuRecipeHandler(DataContext dataContext)
+        public DeleteMenuHandler(DataContext dataContext)
         {
             _dataContext = dataContext;
         }
 
-        public async Task<OperationResult<Menu>> Handle(DeleteMenuRecipe request, CancellationToken cancellationToken)
+        public async Task<OperationResult<Menu>> Handle(DeleteMenu request, CancellationToken cancellationToken)
         {
             var result = new OperationResult<Menu>();
 
             try
             {
-                var menu = await _dataContext.Menus
-                    .Include(m => m.Recipes)
-                    .FirstOrDefaultAsync(m => m.MenuId == request.MenuId);
-                var recipeToDelete = menu.Recipes.FirstOrDefault(mr => mr.RecipeId == request.RecipeId);
+                var menu = await _dataContext.Menus.FirstOrDefaultAsync(r => r.MenuId == request.MenuId);
 
                 if (menu is null)
                 {
@@ -34,27 +31,13 @@ namespace Application.Menus.CommandHandlers
                     var error = new Error
                     {
                         Code = ErrorCode.NotFound,
-                        Message = $"No Menus found with ID {request.MenuId}"
+                        Message = $"No Menu found with ID {request.MenuId}"
                     };
                     result.Errors.Add(error);
                     return result;
                 }
 
-                if (recipeToDelete is null)
-                {
-                    result.IsError = true;
-                    var error = new Error
-                    {
-                        Code = ErrorCode.NotFound,
-                        Message = $"No Recipes found with ID {request.RecipeId}"
-                    };
-                    result.Errors.Add(error);
-                    return result;
-                }
-
-                menu.RemoveRecipe(recipeToDelete);
-
-                _dataContext.Menus.Update(menu);
+                _dataContext.Menus.Remove(menu);
                 await _dataContext.SaveChangesAsync();
 
                 result.Payload = menu;
