@@ -1,18 +1,9 @@
-﻿using Application.Menus.Commands;
-using Application.Menus.Queries;
-using AutoMapper;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Restaurant.Contracts.Menus.Requests;
-using Restaurant.Contracts.Menus.Responses;
-using Restaurant.Filters;
-
-namespace Restaurant.Controllers.V1
+﻿namespace Restaurant.Controllers.V1
 {
     [ApiVersion("1.0")]
     [Route(ApiRoutes.BaseRoute)]
     [ApiController]
+    [Authorize]
     public class MenusController : BaseController
     {
         private readonly IMediator _mediator;
@@ -49,9 +40,11 @@ namespace Restaurant.Controllers.V1
         [ValidateModel]
         public async Task<IActionResult> CreateMenu([FromBody] MenuCreate newMenu)
         {
+            var userProfileId = HttpContext.GetUserProfileIdClaimValue();
+
             var command = new CreateMenu()
             {
-                UserProfileId = newMenu.UserProfileId,
+                UserProfileId = userProfileId,
                 Name = newMenu.Name
             };
 
@@ -67,7 +60,9 @@ namespace Restaurant.Controllers.V1
         [ValidateGuid("id")]
         public async Task<IActionResult> DeleteMenu(string id)
         {
-            var command = new DeleteMenu() { MenuId = Guid.Parse(id) };
+            var userProfileId = HttpContext.GetUserProfileIdClaimValue();
+
+            var command = new DeleteMenu() { MenuId = Guid.Parse(id), UserProfileId = userProfileId };
             var result = await _mediator.Send(command);
 
             return result.IsError ? HandleErrorResponse(result.Errors) : NoContent();
@@ -81,7 +76,7 @@ namespace Restaurant.Controllers.V1
             var query = new GetMenuRecipes() { MenuId = Guid.Parse(menuId) };
             var result = await _mediator.Send(query);
 
-            if (result.IsError) HandleErrorResponse(result.Errors);
+            if (result.IsError) return HandleErrorResponse(result.Errors);
 
             var menu = _mapper.Map<MenuRecipeResponse>(result.Payload);
             return Ok(menu);
@@ -92,18 +87,20 @@ namespace Restaurant.Controllers.V1
         [ValidateGuid("menuId")]
         [ValidateGuid("recipeId")]
         [ValidateModel]
-        public async Task<IActionResult> AddRecipeToMenu(string menuId, [FromQuery, BindRequired] string recipeId, [FromBody] MenuRecipeCreate recipe)
+        public async Task<IActionResult> AddRecipeToMenu(string menuId, [FromQuery, BindRequired] string recipeId)
         {
+            var userProfileId = HttpContext.GetUserProfileIdClaimValue();
+
             var command = new AddMenuRecipe()
             {
                 MenuId = Guid.Parse(menuId),
                 RecipeId = Guid.Parse(recipeId),
-                UserProfileId = recipe.UserProfileId
+                UserProfileId = userProfileId
             };
 
             var result = await _mediator.Send(command);
 
-            if (result.IsError) HandleErrorResponse(result.Errors);
+            if (result.IsError) return HandleErrorResponse(result.Errors);
 
             var newRecipe = _mapper.Map<MenuRecipeResponse>(result.Payload);
             return Ok(newRecipe);

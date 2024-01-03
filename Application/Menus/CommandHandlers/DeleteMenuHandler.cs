@@ -37,6 +37,18 @@ namespace Application.Menus.CommandHandlers
                     return result;
                 }
 
+                if (menu.UserProfileId != request.UserProfileId)
+                {
+                    result.IsError = true;
+                    var error = new Error
+                    {
+                        Code = ErrorCode.MenuDeleteNotPossible,
+                        Message = $"Only the owner of a menu can delete it"
+                    };
+                    result.Errors.Add(error);
+                    return result;
+                }
+
                 _dataContext.Menus.Remove(menu);
                 await _dataContext.SaveChangesAsync();
 

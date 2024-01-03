@@ -1,14 +1,4 @@
-﻿using Application.Recipes.Commands;
-using Application.Recipes.Queries;
-using AutoMapper;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Restaurant.Contracts.Recipes.Requests;
-using Restaurant.Contracts.Recipes.Responses;
-using Restaurant.Filters;
-
-namespace Restaurant.Controllers.V1
+﻿namespace Restaurant.Controllers.V1
 {
     [ApiVersion("1.0")]
     [Route(ApiRoutes.BaseRoute)]
@@ -116,7 +106,7 @@ namespace Restaurant.Controllers.V1
             var query = new GetRecipeIngredients() { RecipeId = Guid.Parse(recipeId) };
             var result = await _mediator.Send(query);
 
-            if (result.IsError) HandleErrorResponse(result.Errors);
+            if (result.IsError) return HandleErrorResponse(result.Errors);
 
             var ingredients = _mapper.Map<List<RecipeIngredientResponse>>(result.Payload);
             return Ok(ingredients);
@@ -137,7 +127,7 @@ namespace Restaurant.Controllers.V1
 
             var result = await _mediator.Send(command);
 
-            if (result.IsError) HandleErrorResponse(result.Errors);
+            if (result.IsError) return HandleErrorResponse(result.Errors);
 
             var newIngredient = _mapper.Map<RecipeIngredientResponse>(result.Payload);
             return Ok(newIngredient);

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Restaurant.Contracts.Recipes.Requests
+﻿namespace Restaurant.Contracts.Recipes.Requests
 {
     public class RecipeIngredientUpdate
     {

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
-
-namespace Restaurant.Registrars
+﻿namespace Restaurant.Registrars
 {
     public class MvcWebAppRegistrar : IWebApplicationRegistrar
     {
@@ -20,6 +18,7 @@ namespace Restaurant.Registrars
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();

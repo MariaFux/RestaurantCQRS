@@ -1,7 +1,14 @@
-﻿namespace Restaurant.Contracts.UserProfile.Requests
+﻿namespace Restaurant.Contracts.Identity
 {
-    public class UserProfileCreateUpdate
+    public class UserRegistration
     {
+        [Required]
+        [EmailAddress]
+        public string UserName { get; set; }
+
+        [Required]
+        public string Password { get; set; }
+
         [Required]
         [MinLength(3)]
         [MaxLength(50)]
@@ -13,14 +20,9 @@
         public string LastName { get; set; }
 
         [Required]
-        [EmailAddress]
-        public string Email { get; set; }
-
-        public string Phone { get; set; }
-
-        [Required]
         public DateTime DateOfBirth { get; set; }
 
+        public string Phone { get; set; }
         public string CurrentCity { get; set; }
     }
 }

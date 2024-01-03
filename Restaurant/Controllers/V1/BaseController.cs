@@ -1,9 +1,4 @@
-﻿using Application.Enums;
-using Application.Models;
-using Microsoft.AspNetCore.Mvc;
-using Restaurant.Contracts.Common;
-
-namespace Restaurant.Controllers.V1
+﻿namespace Restaurant.Controllers.V1
 {
     public class BaseController : ControllerBase
     {
@@ -23,12 +18,12 @@ namespace Restaurant.Controllers.V1
                 return NotFound(apiError);
             }
 
-            apiError.StatusCode = (int)ErrorCode.ServerError;
-            apiError.StatusPhrase = "Internal Server Error";
+            apiError.StatusCode = (int)ErrorCode.BadRequest;
+            apiError.StatusPhrase = "Bad Request";
             apiError.Timestamp = DateTime.Now;
-            apiError.Errors.Add("Unknown error");
+            errors.ForEach(e => apiError.Errors.Add(e.Message));
 
-            return StatusCode((int)ErrorCode.ServerError, apiError);
+            return StatusCode((int)ErrorCode.BadRequest, apiError);
         }
     }
 }

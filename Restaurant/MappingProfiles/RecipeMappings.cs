@@ -1,9 +1,4 @@
-﻿using AutoMapper;
-using Domain.Aggregates.RecipeAggregate;
-using Restaurant.Contracts.Menus.Responses;
-using Restaurant.Contracts.Recipes.Responses;
-
-namespace Restaurant.MappingProfiles
+﻿namespace Restaurant.MappingProfiles
 {
     public class RecipeMappings : Profile
     {

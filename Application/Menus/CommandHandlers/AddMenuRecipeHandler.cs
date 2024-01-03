@@ -23,8 +23,7 @@ namespace Application.Menus.CommandHandlers
 
             try
             {
-                var menu = await _dataContext.Menus.FirstOrDefaultAsync(m => m.MenuId == request.MenuId);
-                var recipe = await _dataContext.Recipes.FirstOrDefaultAsync(r => r.RecipeId == request.RecipeId);
+                var menu = await _dataContext.Menus.FirstOrDefaultAsync(m => m.MenuId == request.MenuId);                
 
                 if (menu is null)
                 {
@@ -37,6 +36,20 @@ namespace Application.Menus.CommandHandlers
                     result.Errors.Add(error);
                     return result;
                 }
+
+                if (menu.UserProfileId != request.UserProfileId)
+                {
+                    result.IsError = true;
+                    var error = new Error
+                    {
+                        Code = ErrorCode.AddRecipeToMenuNotPossible,
+                        Message = $"Add recipe to menu not possible because it's not the menu owner that initiates the add"
+                    };
+                    result.Errors.Add(error);
+                    return result;
+                }
+
+                var recipe = await _dataContext.Recipes.FirstOrDefaultAsync(r => r.RecipeId == request.RecipeId);
 
                 if (recipe is null)
                 {

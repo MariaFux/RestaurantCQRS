@@ -1,17 +1,9 @@
-﻿using Application.UserProfiles.Commands;
-using Application.UserProfiles.Queries;
-using AutoMapper;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Restaurant.Contracts.UserProfile.Requests;
-using Restaurant.Contracts.UserProfile.Responses;
-using Restaurant.Filters;
-
-namespace Restaurant.Controllers.V1
+﻿namespace Restaurant.Controllers.V1
 {
     [ApiVersion("1.0")]
     [Route(ApiRoutes.BaseRoute)]
     [ApiController]
+    [Authorize]
     public class UserProfilesController : BaseController
     {
         private readonly IMediator _mediator;
@@ -30,18 +22,6 @@ namespace Restaurant.Controllers.V1
             var profiles = _mapper.Map<List<UserProfileResponse>>(response.Payload);
 
             return Ok(profiles);
-        }
-
-        [HttpPost]
-        [ValidateModel]
-        public async Task<IActionResult> CreateUserProfileAsync([FromBody] UserProfileCreateUpdate profile)
-        {
-            var command = _mapper.Map<CreateUserCommand>(profile);
-            var response = await _mediator.Send(command);
-            var userProfile = _mapper.Map<UserProfileResponse>(response.Payload);
-
-            return response.IsError ? HandleErrorResponse(response.Errors) : CreatedAtAction(nameof(GetUserProfileById), 
-                new { id = userProfile.UserProfileId }, userProfile);
         }
 
         [HttpGet]

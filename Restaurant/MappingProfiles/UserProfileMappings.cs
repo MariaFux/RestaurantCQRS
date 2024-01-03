@@ -1,17 +1,9 @@
-﻿using Application.UserProfiles.Commands;
-using AutoMapper;
-using Domain.Aggregates.UserProfileAggregate;
-using Restaurant.Contracts.Menus.Responses;
-using Restaurant.Contracts.UserProfile.Requests;
-using Restaurant.Contracts.UserProfile.Responses;
-
-namespace Restaurant.MappingProfiles
+﻿namespace Restaurant.MappingProfiles
 {
     public class UserProfileMappings : Profile
     {
         public UserProfileMappings()
         {
-            CreateMap<UserProfileCreateUpdate, CreateUserCommand>();
             CreateMap<UserProfileCreateUpdate, UpdateUserProfileBasicInfo>();
             CreateMap<UserProfile, UserProfileResponse>();
             CreateMap<BasicInfo, BasicInformation>();
