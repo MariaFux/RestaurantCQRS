@@ -36,7 +36,7 @@ namespace Application.Identity.Handlers
                 if (identityUser == null) return result;
 
                 var userProfile = await _dataContext.UserProfiles
-                    .FirstOrDefaultAsync(up => up.IdentityId == identityUser.Id);
+                    .FirstOrDefaultAsync(up => up.IdentityId == identityUser.Id, cancellationToken: cancellationToken);
 
                 result.Payload = GetJwtString(identityUser, userProfile);
             } 

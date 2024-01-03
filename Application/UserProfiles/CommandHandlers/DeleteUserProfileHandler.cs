@@ -22,7 +22,7 @@ namespace Application.UserProfiles.CommandHandlers
             var result = new OperationResult<UserProfile>();
 
             var userProfile = await _dataContext.UserProfiles
-                .FirstOrDefaultAsync(up => up.UserProfileId == request.UserProfileId);
+                .FirstOrDefaultAsync(up => up.UserProfileId == request.UserProfileId, cancellationToken);
 
             if (userProfile is null)
             {
@@ -37,7 +37,7 @@ namespace Application.UserProfiles.CommandHandlers
             }
 
             _dataContext.UserProfiles.Remove(userProfile);
-            await _dataContext.SaveChangesAsync();
+            await _dataContext.SaveChangesAsync(cancellationToken);
 
             result.Payload = userProfile;
             return result;

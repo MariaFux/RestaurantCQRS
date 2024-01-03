@@ -20,7 +20,7 @@ namespace Application.Recipes.QueriesHandler
         {
             var result = new OperationResult<Recipe>();
             var recipe = await _dataContext.Recipes
-                .FirstOrDefaultAsync(r => r.RecipeId == request.RecipeId);
+                .FirstOrDefaultAsync(r => r.RecipeId == request.RecipeId, cancellationToken);
 
             if (recipe is null)
             {

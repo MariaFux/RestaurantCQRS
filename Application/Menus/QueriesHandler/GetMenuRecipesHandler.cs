@@ -26,7 +26,7 @@ namespace Application.Menus.QueriesHandler
                     .Include(m => m.Recipes)
                         .ThenInclude(r => r.Ingredients)
                     .Include(m => m.UserProfile)
-                    .FirstOrDefaultAsync(m => m.MenuId == request.MenuId);
+                    .FirstOrDefaultAsync(m => m.MenuId == request.MenuId, cancellationToken);
 
                 result.Payload = menu;
             }

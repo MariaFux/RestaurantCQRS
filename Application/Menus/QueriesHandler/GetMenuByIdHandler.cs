@@ -20,7 +20,7 @@ namespace Application.Menus.QueriesHandler
         {
             var result = new OperationResult<Menu>();
             var menu = await _dataContext.Menus
-                .FirstOrDefaultAsync(r => r.MenuId == request.MenuId);
+                .FirstOrDefaultAsync(r => r.MenuId == request.MenuId, cancellationToken);
 
             if (menu is null)
             {

@@ -23,7 +23,7 @@ namespace Application.Menus.CommandHandlers
 
             try
             {
-                var menu = await _dataContext.Menus.FirstOrDefaultAsync(r => r.MenuId == request.MenuId);
+                var menu = await _dataContext.Menus.FirstOrDefaultAsync(r => r.MenuId == request.MenuId, cancellationToken);
 
                 if (menu is null)
                 {
@@ -50,7 +50,7 @@ namespace Application.Menus.CommandHandlers
                 }
 
                 _dataContext.Menus.Remove(menu);
-                await _dataContext.SaveChangesAsync();
+                await _dataContext.SaveChangesAsync(cancellationToken);
 
                 result.Payload = menu;
             }

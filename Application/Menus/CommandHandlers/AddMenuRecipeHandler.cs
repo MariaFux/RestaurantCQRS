@@ -23,7 +23,7 @@ namespace Application.Menus.CommandHandlers
 
             try
             {
-                var menu = await _dataContext.Menus.FirstOrDefaultAsync(m => m.MenuId == request.MenuId);                
+                var menu = await _dataContext.Menus.FirstOrDefaultAsync(m => m.MenuId == request.MenuId, cancellationToken);                
 
                 if (menu is null)
                 {
@@ -49,7 +49,7 @@ namespace Application.Menus.CommandHandlers
                     return result;
                 }
 
-                var recipe = await _dataContext.Recipes.FirstOrDefaultAsync(r => r.RecipeId == request.RecipeId);
+                var recipe = await _dataContext.Recipes.FirstOrDefaultAsync(r => r.RecipeId == request.RecipeId, cancellationToken);
 
                 if (recipe is null)
                 {
@@ -68,7 +68,7 @@ namespace Application.Menus.CommandHandlers
                 menu.AddRecipe(menuRecipe);
 
                 _dataContext.Menus.Update(menu);
-                await _dataContext.SaveChangesAsync();
+                await _dataContext.SaveChangesAsync(cancellationToken);
 
                 result.Payload = menuRecipe;
             }

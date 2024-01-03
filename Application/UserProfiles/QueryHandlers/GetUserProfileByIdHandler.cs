@@ -20,7 +20,7 @@ namespace Application.UserProfiles.QueryHandlers
         public async Task<OperationResult<UserProfile>> Handle(GetUserProfileById request, CancellationToken cancellationToken)
         {
             var result = new OperationResult<UserProfile>();
-            var userProfile = await _dataContext.UserProfiles.FirstOrDefaultAsync(up => up.UserProfileId == request.UserProfileId);
+            var userProfile = await _dataContext.UserProfiles.FirstOrDefaultAsync(up => up.UserProfileId == request.UserProfileId, cancellationToken);
             
             if (userProfile is null)
             {

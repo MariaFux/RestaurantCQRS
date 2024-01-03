@@ -23,7 +23,7 @@ namespace Application.Recipes.CommandHandlers
 
             try
             {
-                var recipe = await _dataContext.Recipes.FirstOrDefaultAsync(r => r.RecipeId == request.RecipeId);
+                var recipe = await _dataContext.Recipes.FirstOrDefaultAsync(r => r.RecipeId == request.RecipeId, cancellationToken);
 
                 if (recipe is null)
                 {
@@ -38,7 +38,7 @@ namespace Application.Recipes.CommandHandlers
                 }
 
                 _dataContext.Recipes.Remove(recipe);
-                await _dataContext.SaveChangesAsync();
+                await _dataContext.SaveChangesAsync(cancellationToken);
 
                 result.Payload = recipe;
             }

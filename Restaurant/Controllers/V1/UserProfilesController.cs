@@ -15,10 +15,10 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllProfilesAsync()
+        public async Task<IActionResult> GetAllProfilesAsync(CancellationToken cancellationToken)
         {
             var query = new GetAllUserProfiles();
-            var response = await _mediator.Send(query);
+            var response = await _mediator.Send(query, cancellationToken);
             var profiles = _mapper.Map<List<UserProfileResponse>>(response.Payload);
 
             return Ok(profiles);
@@ -26,10 +26,10 @@
 
         [HttpGet]
         [Route(ApiRoutes.UserProfiles.IdRoute)]
-        public async Task<IActionResult> GetUserProfileById(string id)
+        public async Task<IActionResult> GetUserProfileById(string id, CancellationToken cancellationToken)
         {
             var query = new GetUserProfileById { UserProfileId = Guid.Parse(id) };
-            var response = await _mediator.Send(query);
+            var response = await _mediator.Send(query, cancellationToken);
 
             if (response.IsError)
                 return HandleErrorResponse(response.Errors);
@@ -42,11 +42,11 @@
         [Route(ApiRoutes.UserProfiles.IdRoute)]
         [ValidateModel]
         [ValidateGuid("id")]
-        public async Task<IActionResult> UpdateUserProfile(string id, UserProfileCreateUpdate updatedProfile)
+        public async Task<IActionResult> UpdateUserProfile(string id, UserProfileCreateUpdate updatedProfile, CancellationToken cancellationToken)
         {
             var command = _mapper.Map<UpdateUserProfileBasicInfo>(updatedProfile);
             command.UserProfileId = Guid.Parse(id);
-            var response = await _mediator.Send(command);
+            var response = await _mediator.Send(command, cancellationToken);
 
             return response.IsError ? HandleErrorResponse(response.Errors) : NoContent();
         }
@@ -54,10 +54,10 @@
         [HttpDelete]
         [Route(ApiRoutes.UserProfiles.IdRoute)]
         [ValidateGuid("id")]
-        public async Task<IActionResult> DeleteUserProfile(string id)
+        public async Task<IActionResult> DeleteUserProfile(string id, CancellationToken cancellationToken)
         {
             var command = new DeleteUserProfile() { UserProfileId = Guid.Parse(id) };
-            var response = await _mediator.Send(command);
+            var response = await _mediator.Send(command, cancellationToken);
 
             return response.IsError ? HandleErrorResponse(response.Errors) : NoContent();
         }

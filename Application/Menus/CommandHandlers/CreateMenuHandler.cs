@@ -25,7 +25,7 @@ namespace Application.Menus.CommandHandlers
             {
                 var menu = Menu.CreateMenu(request.UserProfileId, request.Name);
                 _dataContext.Menus.Add(menu);
-                await _dataContext.SaveChangesAsync();
+                await _dataContext.SaveChangesAsync(cancellationToken);
 
                 result.Payload = menu;
             }

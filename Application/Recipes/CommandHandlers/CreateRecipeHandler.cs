@@ -24,7 +24,7 @@ namespace Application.Recipes.CommandHandlers
             {
                 var recipe = Recipe.CreateRecipe(request.UserProfileId, request.Name, request.TextContent);
                 _dataContext.Recipes.Add(recipe);
-                await _dataContext.SaveChangesAsync();
+                await _dataContext.SaveChangesAsync(cancellationToken);
 
                 result.Payload = recipe;
             } 

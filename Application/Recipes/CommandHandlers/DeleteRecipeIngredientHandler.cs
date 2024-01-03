@@ -25,7 +25,7 @@ namespace Application.Recipes.CommandHandlers
             {
                 var recipe = await _dataContext.Recipes
                     .Include(r => r.Ingredients)
-                    .FirstOrDefaultAsync(r => r.RecipeId == request.RecipeId);
+                    .FirstOrDefaultAsync(r => r.RecipeId == request.RecipeId, cancellationToken);
                 var ingredient = recipe.Ingredients.FirstOrDefault(ri => ri.IngredientId == request.IngredientId);
 
                 if (recipe is null)
@@ -55,7 +55,7 @@ namespace Application.Recipes.CommandHandlers
                 recipe.RemoveIngredient(ingredient);
 
                 _dataContext.Recipes.Update(recipe);
-                await _dataContext.SaveChangesAsync();
+                await _dataContext.SaveChangesAsync(cancellationToken);
 
                 result.Payload = ingredient;
             }

@@ -21,7 +21,7 @@ namespace Application.Menus.QueriesHandler
             var result = new OperationResult<List<Menu>>();
             try
             {
-                var menu = await _dataContext.Menus.ToListAsync();
+                var menu = await _dataContext.Menus.ToListAsync(cancellationToken);
                 result.Payload = menu;
             }
             catch (Exception ex)

@@ -25,7 +25,7 @@ namespace Application.UserProfiles.CommandHandlers
             try
             {
                 var userProfile = await _dataContext.UserProfiles
-                    .FirstOrDefaultAsync(up => up.UserProfileId == request.UserProfileId);
+                    .FirstOrDefaultAsync(up => up.UserProfileId == request.UserProfileId, cancellationToken);
 
                 if(userProfile is null)
                 {
@@ -42,7 +42,7 @@ namespace Application.UserProfiles.CommandHandlers
                 userProfile.UpdateBasicInfo(basicInfo);
 
                 _dataContext.UserProfiles.Update(userProfile);
-                await _dataContext.SaveChangesAsync();
+                await _dataContext.SaveChangesAsync(cancellationToken);
 
                 result.Payload = userProfile;
             }

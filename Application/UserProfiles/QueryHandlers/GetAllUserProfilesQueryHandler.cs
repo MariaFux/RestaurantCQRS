@@ -19,7 +19,7 @@ namespace Application.UserProfiles.QueryHandlers
         public async Task<OperationResult<IEnumerable<UserProfile>>> Handle(GetAllUserProfiles request, CancellationToken cancellationToken)
         {
             var result = new OperationResult<IEnumerable<UserProfile>>();
-            result.Payload = await _dataContext.UserProfiles.ToListAsync();
+            result.Payload = await _dataContext.UserProfiles.ToListAsync(cancellationToken);
             return result;
         }
     }

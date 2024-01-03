@@ -24,7 +24,7 @@ namespace Application.Recipes.QueriesHandler
             {
                 var recipe = await _dataContext.Recipes
                     .Include(r => r.Ingredients)
-                    .FirstOrDefaultAsync(r => r.RecipeId == request.RecipeId);
+                    .FirstOrDefaultAsync(r => r.RecipeId == request.RecipeId, cancellationToken);
 
                 result.Payload = recipe.Ingredients.ToList();
             }

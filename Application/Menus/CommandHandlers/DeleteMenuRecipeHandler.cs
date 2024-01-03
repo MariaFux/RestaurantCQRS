@@ -25,7 +25,7 @@ namespace Application.Menus.CommandHandlers
             {
                 var menu = await _dataContext.Menus
                     .Include(m => m.Recipes)
-                    .FirstOrDefaultAsync(m => m.MenuId == request.MenuId);
+                    .FirstOrDefaultAsync(m => m.MenuId == request.MenuId, cancellationToken);
                 var recipeToDelete = menu.Recipes.FirstOrDefault(mr => mr.RecipeId == request.RecipeId);
 
                 if (menu is null)
@@ -55,7 +55,7 @@ namespace Application.Menus.CommandHandlers
                 menu.RemoveRecipe(recipeToDelete);
 
                 _dataContext.Menus.Update(menu);
-                await _dataContext.SaveChangesAsync();
+                await _dataContext.SaveChangesAsync(cancellationToken);
 
                 result.Payload = menu;
             }

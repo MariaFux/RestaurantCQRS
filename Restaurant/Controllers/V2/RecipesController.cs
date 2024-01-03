@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace Restaurant.Controllers.V2
+﻿namespace Restaurant.Controllers.V2
 {
     [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -9,7 +7,7 @@ namespace Restaurant.Controllers.V2
     {
         [HttpGet]
         [Route("{id}")]
-        public IActionResult GetById(int id)
+        public IActionResult GetById(int id, CancellationToken cancellationToken)
         {
             return Ok();
         }

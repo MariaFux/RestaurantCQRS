@@ -35,14 +35,14 @@ namespace Application.Identity.Handlers
                 var creationValidated = await ValidateIdentityDoesNotExsist(result, request);
                 if (!creationValidated) return result;
 
-                using var transaction = _dataContext.Database.BeginTransaction();
+                await using var transaction = await _dataContext.Database.BeginTransactionAsync(cancellationToken);
 
-                var identity = await CreateIdentityUserAsync(result, request, transaction);    
+                var identity = await CreateIdentityUserAsync(result, request, transaction, cancellationToken);    
                 if (identity == null) return result;
 
-                var profile = await CreateUserProfileAsync(result, request, transaction, identity);
+                var profile = await CreateUserProfileAsync(result, request, transaction, identity, cancellationToken);
 
-                await transaction.CommitAsync();
+                await transaction.CommitAsync(cancellationToken);
 
                 result.Payload = GetJwtString(identity, profile);
             }
@@ -80,7 +80,7 @@ namespace Application.Identity.Handlers
         }
 
         private async Task<IdentityUser> CreateIdentityUserAsync(OperationResult<string> result, RegisterIdentity request, 
-            IDbContextTransaction transaction)
+            IDbContextTransaction transaction, CancellationToken cancellationToken)
         {
             var identity = new IdentityUser
             {
@@ -91,7 +91,7 @@ namespace Application.Identity.Handlers
             var createdIdentity = await _userManager.CreateAsync(identity, request.Password);
             if (!createdIdentity.Succeeded)
             {
-                await transaction.RollbackAsync();
+                await transaction.RollbackAsync(cancellationToken);
                 result.IsError = true;
 
                 foreach (var identityError in createdIdentity.Errors)
@@ -111,7 +111,7 @@ namespace Application.Identity.Handlers
         }
 
         private async Task<UserProfile> CreateUserProfileAsync(OperationResult<string> result, RegisterIdentity request,
-            IDbContextTransaction transaction, IdentityUser identity)
+            IDbContextTransaction transaction, IdentityUser identity, CancellationToken cancellationToken)
         {
             try
             {
@@ -120,12 +120,12 @@ namespace Application.Identity.Handlers
 
                 var profile = UserProfile.CreateUserProfile(identity.Id, profileInfo);
                 _dataContext.UserProfiles.Add(profile);
-                await _dataContext.SaveChangesAsync();
+                await _dataContext.SaveChangesAsync(cancellationToken);
                 return profile;
             } 
             catch (Exception ex)
             {
-                await transaction.RollbackAsync();
+                await transaction.RollbackAsync(cancellationToken);
                 throw;
             }
         }

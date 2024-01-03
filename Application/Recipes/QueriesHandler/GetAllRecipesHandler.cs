@@ -20,7 +20,7 @@ namespace Application.Recipes.QueriesHandler
             var result = new OperationResult<List<Recipe>>();
             try
             {                
-                var recipes = await _dataContext.Recipes.ToListAsync();
+                var recipes = await _dataContext.Recipes.ToListAsync(cancellationToken);
                 result.Payload = recipes;
             }
             catch (Exception ex)
