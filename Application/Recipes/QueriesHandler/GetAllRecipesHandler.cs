@@ -1,5 +1,4 @@
-﻿using Application.Enums;
-using Application.Models;
+﻿using Application.Models;
 using Application.Recipes.Queries;
 using Dal;
 using Domain.Aggregates.RecipeAggregate;
@@ -25,9 +24,7 @@ namespace Application.Recipes.QueriesHandler
             }
             catch (Exception ex)
             {
-                var error = new Error { Code = ErrorCode.UnknownError, Message = $"{ex.Message}" };
-                result.IsError = true;
-                result.Errors.Add(error);                
+                result.AddUnknowError(ex.Message);
             }
             return result;
         }

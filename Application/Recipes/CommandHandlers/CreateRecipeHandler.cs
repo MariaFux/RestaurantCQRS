@@ -30,26 +30,11 @@ namespace Application.Recipes.CommandHandlers
             } 
             catch (RecipeNotValidException ex)
             {
-                result.IsError = true;
-                ex.ValidationErrors.ForEach(e =>
-                {
-                    var error = new Error
-                    {
-                        Code = ErrorCode.ValidationError,
-                        Message = $"{ex.Message}"
-                    };
-                    result.Errors.Add(error);
-                });
+                ex.ValidationErrors.ForEach(e => result.AddError(ErrorCode.ValidationError, e));
             }
             catch (Exception ex)
             {
-                var error = new Error
-                {
-                    Code = ErrorCode.UnknownError,
-                    Message = $"{ex.Message}"
-                };
-                result.IsError = true;
-                result.Errors.Add(error);
+                result.AddUnknowError(ex.Message);
             }
 
             return result;

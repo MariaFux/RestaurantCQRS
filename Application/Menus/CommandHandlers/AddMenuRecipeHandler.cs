@@ -27,25 +27,13 @@ namespace Application.Menus.CommandHandlers
 
                 if (menu is null)
                 {
-                    result.IsError = true;
-                    var error = new Error
-                    {
-                        Code = ErrorCode.NotFound,
-                        Message = $"No Menus found with ID {request.MenuId}"
-                    };
-                    result.Errors.Add(error);
+                    result.AddError(ErrorCode.NotFound, string.Format(MenuErrorMessages.MenuNotFound, request.MenuId));
                     return result;
                 }
 
                 if (menu.UserProfileId != request.UserProfileId)
                 {
-                    result.IsError = true;
-                    var error = new Error
-                    {
-                        Code = ErrorCode.AddRecipeToMenuNotPossible,
-                        Message = $"Add recipe to menu not possible because it's not the menu owner that initiates the add"
-                    };
-                    result.Errors.Add(error);
+                    result.AddError(ErrorCode.AddRecipeToMenuNotPossible, MenuErrorMessages.AddRecipeToMenuNotPossible);                    
                     return result;
                 }
 
@@ -53,13 +41,7 @@ namespace Application.Menus.CommandHandlers
 
                 if (recipe is null)
                 {
-                    result.IsError = true;
-                    var error = new Error
-                    {
-                        Code = ErrorCode.NotFound,
-                        Message = $"No Recipes found with ID {request.RecipeId}"
-                    };
-                    result.Errors.Add(error);
+                    result.AddError(ErrorCode.NotFound, string.Format(MenuErrorMessages.RecipeNotFound, request.RecipeId));
                     return result;
                 }
 
@@ -74,13 +56,7 @@ namespace Application.Menus.CommandHandlers
             }
             catch (Exception ex)
             {
-                var error = new Error
-                {
-                    Code = ErrorCode.UnknownError,
-                    Message = $"{ex.Message}"
-                };
-                result.IsError = true;
-                result.Errors.Add(error);
+                result.AddUnknowError(ex.Message);
             }
 
             return result;

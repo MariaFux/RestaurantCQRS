@@ -30,9 +30,7 @@ namespace Application.Recipes.QueriesHandler
             }
             catch (Exception ex)
             {
-                var error = new Error { Code = ErrorCode.UnknownError, Message = $"{ex.Message}" };
-                result.IsError = true;
-                result.Errors.Add(error);
+                result.AddUnknowError(ex.Message);
             }
 
             return result;

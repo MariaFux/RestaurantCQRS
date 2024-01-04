@@ -33,7 +33,7 @@ namespace Application.Identity.Handlers
             try
             {
                 var identityUser = await ValidateAndGetIdentityAsync(request, result);
-                if (identityUser == null) return result;
+                if (result.IsError) return result;
 
                 var userProfile = await _dataContext.UserProfiles
                     .FirstOrDefaultAsync(up => up.IdentityId == identityUser.Id, cancellationToken: cancellationToken);
@@ -42,13 +42,7 @@ namespace Application.Identity.Handlers
             } 
             catch(Exception ex)
             {
-                var error = new Error
-                {
-                    Code = ErrorCode.UnknownError,
-                    Message = $"{ex.Message}"
-                };
-                result.IsError = true;
-                result.Errors.Add(error);
+                result.AddUnknowError(ex.Message);
             }
 
             return result;
@@ -59,30 +53,12 @@ namespace Application.Identity.Handlers
             var identityUser = await _userManager.FindByEmailAsync(request.UserName);
 
             if (identityUser is null)
-            {
-                result.IsError = true;
-                var error = new Error
-                {
-                    Code = ErrorCode.IdentityUserDoesNotExist,
-                    Message = $"Unable to find a user with the specified username"
-                };
-                result.Errors.Add(error);
-                return null;
-            }
+                result.AddError(ErrorCode.IdentityUserDoesNotExist, IdentityErrorMessages.NonExistentIdentityUser);
 
             var validPassword = await _userManager.CheckPasswordAsync(identityUser, request.Password);
 
             if (!validPassword)
-            {
-                result.IsError = true;
-                var error = new Error
-                {
-                    Code = ErrorCode.IncorrectPassword,
-                    Message = $"The provided password is incorrect"
-                };
-                result.Errors.Add(error);
-                return null;
-            }
+                result.AddError(ErrorCode.IncorrectPassword, IdentityErrorMessages.IncorrectPassword);
 
             return identityUser;
         }

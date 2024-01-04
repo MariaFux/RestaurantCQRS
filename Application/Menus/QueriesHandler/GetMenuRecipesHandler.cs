@@ -1,5 +1,4 @@
-﻿using Application.Enums;
-using Application.Menus.Queries;
+﻿using Application.Menus.Queries;
 using Application.Models;
 using Dal;
 using Domain.Aggregates.MenuAggregate;
@@ -32,9 +31,7 @@ namespace Application.Menus.QueriesHandler
             }
             catch (Exception ex)
             {
-                var error = new Error { Code = ErrorCode.UnknownError, Message = $"{ex.Message}" };
-                result.IsError = true;
-                result.Errors.Add(error);
+                result.AddUnknowError(ex.Message);
             }
 
             return result;

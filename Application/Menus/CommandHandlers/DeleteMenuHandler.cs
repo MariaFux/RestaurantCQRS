@@ -27,25 +27,13 @@ namespace Application.Menus.CommandHandlers
 
                 if (menu is null)
                 {
-                    result.IsError = true;
-                    var error = new Error
-                    {
-                        Code = ErrorCode.NotFound,
-                        Message = $"No Menu found with ID {request.MenuId}"
-                    };
-                    result.Errors.Add(error);
+                    result.AddError(ErrorCode.NotFound, string.Format(MenuErrorMessages.MenuNotFound, request.MenuId));
                     return result;
                 }
 
                 if (menu.UserProfileId != request.UserProfileId)
                 {
-                    result.IsError = true;
-                    var error = new Error
-                    {
-                        Code = ErrorCode.MenuDeleteNotPossible,
-                        Message = $"Only the owner of a menu can delete it"
-                    };
-                    result.Errors.Add(error);
+                    result.AddError(ErrorCode.MenuDeleteNotPossible, MenuErrorMessages.MenuDeleteNotPossible);
                     return result;
                 }
 
@@ -56,13 +44,7 @@ namespace Application.Menus.CommandHandlers
             }
             catch (Exception ex)
             {
-                var error = new Error
-                {
-                    Code = ErrorCode.UnknownError,
-                    Message = $"{ex.Message}"
-                };
-                result.IsError = true;
-                result.Errors.Add(error);
+                result.AddUnknowError(ex.Message);
             }
 
             return result;

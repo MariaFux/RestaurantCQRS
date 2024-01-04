@@ -4,6 +4,7 @@ using Application.Models;
 using Application.Services;
 using Dal;
 using Domain.Aggregates.UserProfileAggregate;
+using Domain.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -32,13 +33,13 @@ namespace Application.Identity.Handlers
 
             try
             {
-                var creationValidated = await ValidateIdentityDoesNotExsist(result, request);
-                if (!creationValidated) return result;
+                await ValidateIdentityDoesNotExsist(result, request);
+                if (result.IsError) return result;
 
                 await using var transaction = await _dataContext.Database.BeginTransactionAsync(cancellationToken);
 
                 var identity = await CreateIdentityUserAsync(result, request, transaction, cancellationToken);    
-                if (identity == null) return result;
+                if (result.IsError) return result;
 
                 var profile = await CreateUserProfileAsync(result, request, transaction, identity, cancellationToken);
 
@@ -46,37 +47,24 @@ namespace Application.Identity.Handlers
 
                 result.Payload = GetJwtString(identity, profile);
             }
+            catch (UserProfileNotValidException ex)
+            {
+                ex.ValidationErrors.ForEach(e => result.AddError(ErrorCode.ValidationError, e));
+            }
             catch (Exception ex)
             {
-                var error = new Error
-                {
-                    Code = ErrorCode.UnknownError,
-                    Message = $"{ex.Message}"
-                };
-                result.IsError = true;
-                result.Errors.Add(error);
+                result.AddUnknowError(ex.Message);
             }
 
             return result;
         }
 
-        private async Task<bool> ValidateIdentityDoesNotExsist(OperationResult<string> result, RegisterIdentity request)
+        private async Task ValidateIdentityDoesNotExsist(OperationResult<string> result, RegisterIdentity request)
         {
             var existingIdentity = await _userManager.FindByEmailAsync(request.UserName);
 
             if (existingIdentity != null)
-            {
-                result.IsError = true;
-                var error = new Error
-                {
-                    Code = ErrorCode.IdentityUserAlreadyExists,
-                    Message = $"Provided email address already exists. Cannot register new user"
-                };
-                result.Errors.Add(error);
-                return false;
-            }
-
-            return true;
+                result.AddError(ErrorCode.IdentityUserAlreadyExists, IdentityErrorMessages.IdentityUserAlreadyExists);
         }
 
         private async Task<IdentityUser> CreateIdentityUserAsync(OperationResult<string> result, RegisterIdentity request, 
@@ -92,19 +80,11 @@ namespace Application.Identity.Handlers
             if (!createdIdentity.Succeeded)
             {
                 await transaction.RollbackAsync(cancellationToken);
-                result.IsError = true;
 
                 foreach (var identityError in createdIdentity.Errors)
                 {
-                    var error = new Error
-                    {
-                        Code = ErrorCode.IdentityCreationFailed,
-                        Message = identityError.Description
-                    };
-                    result.Errors.Add(error);
+                    result.AddError(ErrorCode.IdentityCreationFailed, identityError.Description);
                 }
-
-                return null;
             }
 
             return identity;

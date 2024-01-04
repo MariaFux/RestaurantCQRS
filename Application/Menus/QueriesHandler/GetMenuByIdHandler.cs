@@ -24,13 +24,7 @@ namespace Application.Menus.QueriesHandler
 
             if (menu is null)
             {
-                result.IsError = true;
-                var error = new Error
-                {
-                    Code = ErrorCode.NotFound,
-                    Message = $"No Menu found with ID {request.MenuId}"
-                };
-                result.Errors.Add(error);
+                result.AddError(ErrorCode.NotFound, string.Format(MenuErrorMessages.MenuNotFound, request.MenuId));
                 return result;
             }
 

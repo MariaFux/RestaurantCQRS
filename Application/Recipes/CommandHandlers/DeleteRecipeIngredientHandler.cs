@@ -30,25 +30,13 @@ namespace Application.Recipes.CommandHandlers
 
                 if (recipe is null)
                 {
-                    result.IsError = true;
-                    var error = new Error
-                    {
-                        Code = ErrorCode.NotFound,
-                        Message = $"No Recipe found with ID {request.RecipeId}"
-                    };
-                    result.Errors.Add(error);
+                    result.AddError(ErrorCode.NotFound, string.Format(RecipeErrorMessages.RecipeNotFound, request.RecipeId));
                     return result;
                 }
 
                 if (ingredient is null)
                 {
-                    result.IsError = true;
-                    var error = new Error
-                    {
-                        Code = ErrorCode.NotFound,
-                        Message = $"No Ingredient found with ID {request.IngredientId}"
-                    };
-                    result.Errors.Add(error);
+                    result.AddError(ErrorCode.NotFound, string.Format(RecipeErrorMessages.IngredientNotFound, request.IngredientId));
                     return result;
                 }
 
@@ -61,13 +49,7 @@ namespace Application.Recipes.CommandHandlers
             }
             catch (Exception ex)
             {
-                var error = new Error
-                {
-                    Code = ErrorCode.UnknownError,
-                    Message = $"{ex.Message}"
-                };
-                result.IsError = true;
-                result.Errors.Add(error);
+                result.AddUnknowError(ex.Message);
             }
 
             return result;

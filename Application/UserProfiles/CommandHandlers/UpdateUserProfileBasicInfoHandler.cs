@@ -29,10 +29,7 @@ namespace Application.UserProfiles.CommandHandlers
 
                 if(userProfile is null)
                 {
-                    result.IsError = true;
-                    var error = new Error { Code = ErrorCode.NotFound, 
-                        Message = $"No UserProfile found with ID {request.UserProfileId}" };
-                    result.Errors.Add(error);
+                    result.AddError(ErrorCode.NotFound, string.Format(UserProfilesErrorMessages.UserProfileNotFound, request.UserProfileId));
                     return result;
                 }
 
@@ -48,22 +45,11 @@ namespace Application.UserProfiles.CommandHandlers
             }
             catch (UserProfileNotValidException ex)
             {
-                result.IsError = true;
-                ex.ValidationErrors.ForEach(e =>
-                {
-                    var error = new Error
-                    {
-                        Code = ErrorCode.ValidationError,
-                        Message = $"{ex.Message}"
-                    };
-                    result.Errors.Add(error);
-                });
+                ex.ValidationErrors.ForEach(e => result.AddError(ErrorCode.ValidationError, e));
             }
             catch (Exception ex) 
             {
-                var error = new Error { Code = ErrorCode.ServerError, Message = ex.Message };
-                result.IsError = true;
-                result.Errors.Add(error);
+                result.AddUnknowError(ex.Message);
             }            
 
             return result;

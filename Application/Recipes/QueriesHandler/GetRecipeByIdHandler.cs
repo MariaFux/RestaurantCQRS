@@ -24,13 +24,7 @@ namespace Application.Recipes.QueriesHandler
 
             if (recipe is null)
             {
-                result.IsError = true;
-                var error = new Error
-                {
-                    Code = ErrorCode.NotFound,
-                    Message = $"No Recipe found with ID {request.RecipeId}"
-                };
-                result.Errors.Add(error);
+                result.AddError(ErrorCode.NotFound, string.Format(RecipeErrorMessages.RecipeNotFound, request.RecipeId));
                 return result;
             }
 
